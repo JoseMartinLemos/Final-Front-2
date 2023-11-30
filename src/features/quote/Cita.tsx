@@ -1,22 +1,8 @@
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
-import {
-  Boton,
-  Input,
-  AutorCita,
-  ContenedorCita,
-  TextoCita,
-} from "./styled";
-import {
-  useAppSelector,
-  useAppDispatch,
-} from "../../app/hooks";
-import {
-  obtenerCitaDelEstado,
-  limpiar,
-  obtenerEstadoDelPedido,
-  obtenerCitaDeLaAPI,
-} from "./citaSlice";
+import { Boton, Input, AutorCita, ContenedorCita, TextoCita } from "./styled";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import {obtenerCitaDelEstado, limpiar, obtenerEstadoDelPedido, obtenerCitaDeLaAPI} from "./citaSlice";
 import { obtenerMensaje } from "./utils";
 
 function Cita() {
@@ -52,8 +38,6 @@ function Cita() {
     if (!isNaN(Number(inputValue))) {
       // Si el valor ingresado es numérico
       setError(true);
-    } else if (inputValue === "") {
-      setError(false); // Restablecer el estado de error a `false` si el campo está vacío
     } else {
       setError(false);
       obtenerCita(); // Realizar búsqueda de citas automáticamente
@@ -62,22 +46,26 @@ function Cita() {
 
   return (
     <ContenedorCita>
-      {error && <p>No se recibe valores numéricos</p>}
-      <TextoCita data-testid="character-quote">
-        {obtenerMensaje(cita, estadoPedido)}
-      </TextoCita>
-      <AutorCita data-testid="character-name">{personaje}</AutorCita>
+      {error ? (
+        <TextoCita data-testid="error-message">
+          Por favor ingrese un nombre válido
+        </TextoCita>
+      ) : (
+        <>
+          <TextoCita data-testid="character-quote">
+            {obtenerMensaje(cita, estadoPedido)}
+          </TextoCita>
+          <AutorCita data-testid="character-name">{personaje}</AutorCita>
+        </>
+      )}
       <Input
         aria-label="Author Cita"
         value={valorInput}
         onChange={onChangeInput}
-        placeholder="Ingresa el nombre del autor"
-        style={{ border: error ? "1px solid red" : "1px solid #ccc" }} // Estilos adicionales en caso de error
-      />
+        placeholder="Ingresa el nombre del autor"/>
       <Boton
         aria-label={valorInput ? "Obtener Cita" : "Obtener cita aleatoria"}
-        onClick={obtenerCita}
-      >
+        onClick={obtenerCita}>
         {valorInput ? "Obtener Cita" : "Obtener cita aleatoria"}
       </Boton>
       <Boton aria-label="Borrar" onClick={borrarCita} secondary={true}>
